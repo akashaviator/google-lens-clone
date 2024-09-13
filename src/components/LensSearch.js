@@ -1,8 +1,35 @@
-import { forwardRef } from "react"
+import { forwardRef, useRef } from "react"
 import Close from "../../public/svgs/close.svg"
 import Placeholder from "../../public/svgs/placeholder.svg"
+import { useRouter } from "next/navigation"
+import axios from "axios"
 
 const LensSearch = forwardRef((props, ref) => {
+  const fileInput = useRef(null)
+  const router = useRouter()
+  const uploadFile = async () => {
+    const file = fileInput.current.files[0]
+    const formData = new FormData()
+    formData.append("file", file)
+
+    try {
+      const response = await axios.post("/api/uploadImage", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+
+      console.log(response.data)
+      router.refresh()
+    } catch (error) {
+      console.error("Upload failed:", error)
+    }
+  }
+
+  const handleClick = () => {
+    fileInput.current.click()
+  }
+
   return (
     <div
       ref={ref}
@@ -19,7 +46,23 @@ const LensSearch = forwardRef((props, ref) => {
         <div className="bg-[#202125] w-full border-dashed border border-[#3c4043] h-[280px] justify-end flex flex-col items-center rounded-[10px]">
           <div className="h-[200px] w-11/12 flex items-center justify-center ">
             <span className="flex items-center justify-center gap-6">
-              <Placeholder w={100} /> Drag an image here or upload a file
+              <Placeholder w={100} />
+              <span>
+                Drag an image here or
+                <span
+                  onClick={handleClick}
+                  className="cursor-pointer ml-1.5 text-[rgb(138,180,248)] hover:underline hover:decoration-[rgb(138,180,248)]"
+                >
+                  upload a file
+                </span>
+                <input
+                  type="file"
+                  ref={fileInput}
+                  onChange={uploadFile}
+                  style={{ display: "none" }}
+                  accept="image/*"
+                />
+              </span>
             </span>
           </div>
           <div className="h-[80px] w-11/12 border-gray-600 border-t-[0.5px] relative">
