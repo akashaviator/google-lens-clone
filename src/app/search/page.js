@@ -1,11 +1,11 @@
 "use client"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Header from "@/components/Header"
 import TwinkleImage from "@/components/TwinkleImage"
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams()
   const [loading, setLoading] = useState()
   const [fileName, setFileName] = useState(searchParams.get("search"))
@@ -29,5 +29,13 @@ export default function SearchPage() {
         <div className="h-full bg-[#ffffff] border-t border-[#f1f1f1]"></div>
       </div>
     </div>
+  )
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchPageContent />
+    </Suspense>
   )
 }

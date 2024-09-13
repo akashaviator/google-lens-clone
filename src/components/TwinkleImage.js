@@ -36,7 +36,7 @@ const TwinkleImage = ({
         width={width}
         height={height}
         alt={alt}
-        imageClass={imageClass}
+        className={imageClass}
       />
       {twinkle &&
         stars.map((star) => (
