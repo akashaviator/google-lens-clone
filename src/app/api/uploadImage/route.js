@@ -22,12 +22,13 @@ export async function POST(req) {
       await fs.mkdir(uploadsDir, { recursive: true })
     }
 
+    const uniqueFileName = `${Date.now()}-${file.name}`
+
     const arrayBuffer = await file.arrayBuffer()
     const buffer = new Uint8Array(arrayBuffer)
+    await fs.writeFile(path.join(uploadsDir, uniqueFileName), buffer)
 
-    await fs.writeFile(path.join(uploadsDir, file.name), buffer)
-
-    return NextResponse.json({ status: "success" })
+    return NextResponse.json({ status: "success", fileName: uniqueFileName })
   } catch (e) {
     console.error(e)
     return NextResponse.json(
