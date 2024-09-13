@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
+import SearchBox from "@/components/SearchBox"
 import Image from "next/image"
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
           width={272}
           height={92}
         />
+        <SearchBox className="mt-6" />
       </main>
       <Footer />
     </div>
