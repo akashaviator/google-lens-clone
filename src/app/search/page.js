@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Header from "@/components/Header"
+import TwinkleImage from "@/components/TwinkleImage"
 
 export default function SearchPage() {
   const searchParams = useSearchParams()
@@ -14,12 +15,12 @@ export default function SearchPage() {
       <div className="grid grid-cols-2 flex-grow bg-[#202125]">
         <div className="h-full flex items-center justify-center bg ">
           {fileName ? (
-            <Image
+            <TwinkleImage
               src={`/uploads/${fileName}`}
               alt="Uploaded Image"
               width={500}
               height={500}
-              className="rounded"
+              imageClass="rounded"
             />
           ) : (
             <p>No image found.</p>
