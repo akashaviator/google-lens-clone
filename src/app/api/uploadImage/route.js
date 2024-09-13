@@ -14,7 +14,7 @@ export async function POST(req) {
       )
     }
 
-    const uploadsDir = path.join(process.cwd(), "public/uploads")
+    const uploadsDir = path.resolve("./public", "uploads")
 
     try {
       await fs.access(uploadsDir)
