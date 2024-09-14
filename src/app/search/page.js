@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Header from "@/components/Header"
 import TwinkleImage from "@/components/TwinkleImage"
+import ImageCropper from "@/components/ImageCropper"
 
 function SearchPageContent() {
   const searchParams = useSearchParams()
@@ -15,13 +16,14 @@ function SearchPageContent() {
       <div className="grid grid-cols-2 flex-grow bg-[#202125]">
         <div className="h-full flex items-center justify-center bg ">
           {fileName ? (
-            <TwinkleImage
-              src={`/uploads/${fileName}`}
-              alt="Uploaded Image"
-              width={500}
-              height={500}
-              imageClass="rounded"
-            />
+            // <TwinkleImage
+            //   src={`/uploads/${fileName}`}
+            //   alt="Uploaded Image"
+            //   width={500}
+            //   height={500}
+            //   imageClass="rounded"
+            // />
+            <ImageCropper imageSrc={`/uploads/${fileName}`} />
           ) : (
             <p>No image found.</p>
           )}
