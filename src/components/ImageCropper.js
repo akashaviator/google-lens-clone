@@ -3,10 +3,16 @@ import ReactCrop from "react-image-crop"
 import "react-image-crop/dist/ReactCrop.css"
 import axios from "axios"
 
-const ImageCropper = ({ imageSrc }) => {
+const ImageCropper = ({
+  imageSrc,
+  fileName,
+  setFileName,
+  setShouldFetch,
+  setLoading,
+}) => {
   const imgRef = useRef(null)
   const [crop, setCrop] = useState()
-  const [fileName, setFileName] = useState("")
+  const [croppedFileName, setCroppedFileName] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
   const setFullCrop = () => {
@@ -26,8 +32,11 @@ const ImageCropper = ({ imageSrc }) => {
   }
 
   useEffect(() => {
+    console.log("setting file name")
     setFullCrop()
-    setFileName(generateUniqueFileName())
+    const croppedName = generateUniqueFileName()
+    setFileName(croppedName)
+    setCroppedFileName(croppedName)
   }, [imageSrc])
 
   const onImageLoad = (e) => {
@@ -66,10 +75,10 @@ const ImageCropper = ({ imageSrc }) => {
   }
 
   const saveImage = async (blob) => {
-    setIsLoading(true)
+    setLoading(true)
     const formData = new FormData()
     formData.append("file", blob, fileName)
-    formData.append("fileName", fileName)
+    formData.append("fileName", croppedFileName)
     try {
       const response = await axios.post("/api/uploadImage", formData, {
         headers: {
@@ -84,7 +93,8 @@ const ImageCropper = ({ imageSrc }) => {
     } catch (error) {
       console.error("Error uploading image:", error)
     } finally {
-      setIsLoading(false)
+      //   setFileName(croppedFileName)
+      setLoading(false)
     }
   }
 
@@ -102,7 +112,7 @@ const ImageCropper = ({ imageSrc }) => {
           crop={crop}
           onChange={(c) => setCrop(c)}
           onComplete={onCropComplete}
-          //   disabled={isLoading}
+          onDragEnd={() => setShouldFetch((prev) => prev + 1)}
         >
           <img
             ref={imgRef}
@@ -112,18 +122,6 @@ const ImageCropper = ({ imageSrc }) => {
             style={{ width: "400px", height: "auto" }}
           />
         </ReactCrop>
-      )}
-      {fileName && (
-        <p className="text-gray-500">
-          {isLoading
-            ? "Saving..."
-            : `Cropped image will be saved as: ${fileName}`}
-        </p>
-      )}
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="text-white">Saving image...</div>
-        </div>
       )}
     </div>
   )
