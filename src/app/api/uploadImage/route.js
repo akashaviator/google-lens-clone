@@ -22,13 +22,26 @@ export async function POST(req) {
       await fs.mkdir(uploadsDir, { recursive: true })
     }
 
-    const uniqueFileName = `${Date.now()}-${file.name}`
+    let fileName = file.name
+
+    const specifiedFileName = formData.get("fileName")
+    if (specifiedFileName) {
+      fileName = specifiedFileName
+
+      const existingFilePath = path.join(uploadsDir, fileName)
+      try {
+        await fs.access(existingFilePath)
+        await fs.unlink(existingFilePath)
+      } catch (error) {}
+    } else {
+      fileName = `${Date.now()}-${file.name}`
+    }
 
     const arrayBuffer = await file.arrayBuffer()
     const buffer = new Uint8Array(arrayBuffer)
-    await fs.writeFile(path.join(uploadsDir, uniqueFileName), buffer)
+    await fs.writeFile(path.join(uploadsDir, fileName), buffer)
 
-    return NextResponse.json({ status: "success", fileName: uniqueFileName })
+    return NextResponse.json({ status: "success", fileName: fileName })
   } catch (e) {
     console.error(e)
     return NextResponse.json(

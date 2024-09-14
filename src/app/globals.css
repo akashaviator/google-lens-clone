@@ -25,3 +25,17 @@ body {
     text-wrap: balance;
   }
 }
+
+.ReactCrop__crop-selection:not(
+    .ReactCrop--no-animate .ReactCrop__crop-selection
+  ) {
+  animation: none !important;
+  background-image: none !important;
+}
+
+.ReactCrop__drag-handle.ord-n,
+.ReactCrop__drag-handle.ord-e,
+.ReactCrop__drag-handle.ord-s,
+.ReactCrop__drag-handle.ord-w {
+  display: none !important;
+}

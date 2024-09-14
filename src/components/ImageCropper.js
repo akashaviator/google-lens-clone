@@ -7,6 +7,7 @@ const ImageCropper = ({ imageSrc }) => {
   const imgRef = useRef(null)
   const [crop, setCrop] = useState()
   const [fileName, setFileName] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const setFullCrop = () => {
     setCrop({
@@ -18,8 +19,15 @@ const ImageCropper = ({ imageSrc }) => {
     })
   }
 
+  const generateUniqueFileName = () => {
+    const timestamp = new Date().getTime()
+    const randomString = Math.random().toString(36).substring(2, 8)
+    return `cropped_image_${timestamp}_${randomString}.jpg`
+  }
+
   useEffect(() => {
     setFullCrop()
+    setFileName(generateUniqueFileName())
   }, [imageSrc])
 
   const onImageLoad = (e) => {
@@ -57,9 +65,11 @@ const ImageCropper = ({ imageSrc }) => {
     })
   }
 
-  const saveImage = async (blob, fileName) => {
+  const saveImage = async (blob) => {
+    setIsLoading(true)
     const formData = new FormData()
     formData.append("file", blob, fileName)
+    formData.append("fileName", fileName)
     try {
       const response = await axios.post("/api/uploadImage", formData, {
         headers: {
@@ -73,15 +83,15 @@ const ImageCropper = ({ imageSrc }) => {
       }
     } catch (error) {
       console.error("Error uploading image:", error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const onCropComplete = async (crop) => {
     if (imgRef.current && crop.width && crop.height) {
       const croppedImageBlob = await getCroppedImg(imgRef.current, crop)
-      const fileName = "croppedImage.jpg"
-      setFileName(fileName)
-      await saveImage(croppedImageBlob, fileName)
+      await saveImage(croppedImageBlob)
     }
   }
 
@@ -92,6 +102,7 @@ const ImageCropper = ({ imageSrc }) => {
           crop={crop}
           onChange={(c) => setCrop(c)}
           onComplete={onCropComplete}
+          //   disabled={isLoading}
         >
           <img
             ref={imgRef}
@@ -103,7 +114,16 @@ const ImageCropper = ({ imageSrc }) => {
         </ReactCrop>
       )}
       {fileName && (
-        <p className="text-gray-500">Cropped image saved as: {fileName}</p>
+        <p className="text-gray-500">
+          {isLoading
+            ? "Saving..."
+            : `Cropped image will be saved as: ${fileName}`}
+        </p>
+      )}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="text-white">Saving image...</div>
+        </div>
       )}
     </div>
   )
