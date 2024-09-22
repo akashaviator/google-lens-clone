@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio"
 
-export function extractProductsData(html) {
+export async function extractProductsData(html) {
   const $ = cheerio.load(html)
   const scriptElements = $("script")
 
@@ -27,7 +27,7 @@ export function extractProductsData(html) {
 
   try {
     jason =
-      jsonData[1] && jsonData[1].length === 2
+      jsonData[1].length === 2
         ? jsonData[1][1][1][8][8][0][12]
         : jsonData[1][0][1][8][8][0][12]
   } catch (error) {
@@ -35,6 +35,7 @@ export function extractProductsData(html) {
   }
 
   const productList = []
+
   jason.forEach((product) => {
     const information = {
       google_image: product[0][0],

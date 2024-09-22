@@ -1,14 +1,6 @@
-import Image from "next/image"
 import React, { useEffect, useState } from "react"
 
-const TwinkleImage = ({
-  src,
-  width,
-  height,
-  alt,
-  imageClass,
-  twinkle = true,
-}) => {
+const TwinkleImage = ({ twinkle = true, children }) => {
   const [stars, setStars] = useState([])
 
   useEffect(() => {
@@ -31,13 +23,7 @@ const TwinkleImage = ({
 
   return (
     <div className="relative overflow-hidden">
-      <Image
-        src={src}
-        width={width}
-        height={height}
-        alt={alt}
-        className={imageClass}
-      />
+      {children}
       {twinkle &&
         stars.map((star) => (
           <div

@@ -39,7 +39,41 @@ body {
 .ReactCrop__drag-handle.ord-w {
   display: none !important;
 }
+.ReactCrop__crop-selection {
+  border: 5px solid #00000057;
+}
 
 .products-container {
   max-height: calc(100vh - 80px);
+}
+.ReactCrop__drag-handle {
+  /* transform: none !important; */
+  background: none !important;
+  width: 25px !important;
+  height: 25px !important;
+  border: none;
+}
+.ReactCrop__drag-handle.ord-se {
+  border: none;
+  transform: translate(5px, 5px) !important;
+  border-bottom: 5px solid white;
+  border-right: 5px solid white;
+}
+.ReactCrop__drag-handle.ord-ne {
+  border: none;
+  transform: translate(5px, -5px) !important;
+  border-right: 5px solid white;
+  border-top: 5px solid white;
+}
+.ReactCrop__drag-handle.ord-sw {
+  border: none;
+  transform: translate(-5px, 5px) !important;
+  border-left: 5px solid white;
+  border-bottom: 5px solid white;
+}
+.ReactCrop__drag-handle.ord-nw {
+  border: none;
+  transform: translate(-5px, -5px) !important;
+  border-top: 5px solid white;
+  border-left: 5px solid white;
 }

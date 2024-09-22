@@ -3,24 +3,24 @@ import axios from "axios"
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url)
-  const url = searchParams.get("url") // Get the URL from query parameters
+  const url = searchParams.get("url")
 
   if (!url) {
     return new Response("URL parameter is required", { status: 400 })
   }
 
   try {
-    const apiUrl = `https://lens.google.com/uploadbyurl?url=${process.env.HOME_URL}/uploads/${url}`
+    const apiUrl = `https://lens.google.com/uploadbyurl?url=${url}`
 
-    console.log(apiUrl)
-    const response = await axios.get(apiUrl, {
+    const options = {
       headers: {
         "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0",
       },
-    })
+    }
+    const response = await axios.get(apiUrl, options)
 
-    const data = extractProductsData(response.data)
+    const data = await extractProductsData(response.data)
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: {

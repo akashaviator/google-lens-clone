@@ -1,11 +1,9 @@
 "use client"
 import { Suspense, useEffect, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import Image from "next/image"
+import { useSearchParams } from "next/navigation"
 import Header from "@/components/Header"
 import TwinkleImage from "@/components/TwinkleImage"
 import ImageCropper from "@/components/ImageCropper"
-import { extractProductsData } from "../utils/helper"
 import ProductsGrid from "@/components/ProductsGrid"
 import axios from "axios"
 
@@ -16,50 +14,59 @@ function SearchPageContent() {
   const qsearch = searchParams.get("search")
   const [fileName, setFileName] = useState(qsearch)
   const [shouldFetch, setShouldFetch] = useState(0)
+  const bucketName = process.env.NEXT_PUBLIC_AWS_BUCKET_NAME
+  const region = process.env.NEXT_PUBLIC_AWS_BUCKET_REGION
+
+  const imageSrc = qsearch
+    ? `https://${bucketName}.s3.${region}.amazonaws.com/${qsearch}`
+    : null
+  const searchImageSrc = qsearch
+    ? `https://${bucketName}.s3.${region}.amazonaws.com/${fileName}`
+    : null
 
   useEffect(() => {
     console.log(fileName, shouldFetch)
-    const url = fileName
-
+    if (!imageSrc) return
     const fetchData = async () => {
       try {
-        console.log(url)
-        const response = await axios.get(`/api/proxy?url=${url}`)
+        console.log("Fetching data for:", imageSrc)
+        const response = await axios.get(
+          `/api/proxy?url=${encodeURIComponent(
+            shouldFetch > 0 ? searchImageSrc : imageSrc
+          )}`
+        )
         setProducts(response.data)
       } catch (err) {
         console.error("Error fetching data:", err)
+      } finally {
+        setLoading(false)
       }
     }
 
     fetchData()
-  }, [fileName, shouldFetch])
+  }, [imageSrc, shouldFetch])
 
   return (
     <div className="flex flex-col min-h-screen overflow-y-auto">
       <Header className="text-[#5f6267] bg-[#ffffff]" showLogo />
-      <div className="grid grid-cols-2 flex-grow bg-[#202125]">
+      <div className={`grid grid-cols-[3fr_auto] flex-grow bg-[#202125]`}>
         <div className="h-full flex items-center justify-center bg ">
           {qsearch ? (
-            // <TwinkleImage
-            //   src={`/uploads/${fileName}`}
-            //   alt="Uploaded Image"
-            //   width={500}
-            //   height={500}
-            //   imageClass="rounded"
-            // />
-            <ImageCropper
-              imageSrc={`/uploads/${qsearch}`}
-              fileName={fileName}
-              setFileName={setFileName}
-              setLoading={setLoading}
-              setShouldFetch={setShouldFetch}
-            />
+            <TwinkleImage twinkle={loading && shouldFetch === 0}>
+              <ImageCropper
+                imageSrc={imageSrc}
+                fileName={fileName}
+                setFileName={setFileName}
+                setLoading={setLoading}
+                setShouldFetch={setShouldFetch}
+              />
+            </TwinkleImage>
           ) : (
             <p>No image found.</p>
           )}
         </div>
         <div className="h-full bg-[#ffffff] border-t border-[#f1f1f1]">
-          <ProductsGrid products={products} />
+          <ProductsGrid products={products} loading={loading} />
         </div>
       </div>
     </div>

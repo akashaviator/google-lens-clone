@@ -12,8 +12,19 @@ const LensSearch = forwardRef((props, ref) => {
 
   const uploadFile = async () => {
     const file = fileInput.current.files[0]
+
+    const validTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"]
+    if (!validTypes.includes(file.type)) {
+      console.error("Invalid file type:", file.type)
+      alert("Please upload a valid image (PNG, JPEG, JPG, WEBP).")
+      return
+    }
+
     const formData = new FormData()
     formData.append("file", file)
+    formData.append("fileSize", file.size)
+    formData.append("fileType", file.type)
+
     setLoading(true)
 
     try {
@@ -22,14 +33,28 @@ const LensSearch = forwardRef((props, ref) => {
           "Content-Type": "multipart/form-data",
         },
       })
+
       if (response.status === 200) {
-        router.push(`/search?search=${response.data.fileName}`)
+        const { uploadUrl, fileName } = response.data
+
+        const uploadResponse = await axios.put(uploadUrl, file, {
+          headers: {
+            "Content-Type": file.type,
+          },
+        })
+
+        if (uploadResponse.status === 200) {
+          router.push(`/search?search=${fileName}`)
+        } else {
+          console.error("S3 Upload Failed:", uploadResponse.data.error)
+          alert("Failed to upload image to S3.")
+        }
       } else {
         console.error("Upload Failed:", response.data.error)
-        setLoading(false)
       }
     } catch (error) {
       console.error("Upload failed:", error)
+    } finally {
       setLoading(false)
     }
   }
@@ -126,4 +151,5 @@ const LensSearch = forwardRef((props, ref) => {
     </div>
   )
 })
+
 export default LensSearch

@@ -13,7 +13,6 @@ const ImageCropper = ({
   const imgRef = useRef(null)
   const [crop, setCrop] = useState()
   const [croppedFileName, setCroppedFileName] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
 
   const setFullCrop = () => {
     setCrop({
@@ -75,10 +74,13 @@ const ImageCropper = ({
   }
 
   const saveImage = async (blob) => {
-    setLoading(true)
     const formData = new FormData()
+    const fileSize = blob.size
+    const fileType = blob.type || "image/jpeg"
     formData.append("file", blob, fileName)
     formData.append("fileName", croppedFileName)
+    formData.append("fileSize", fileSize)
+    formData.append("fileType", fileType)
     try {
       const response = await axios.post("/api/uploadImage", formData, {
         headers: {
@@ -86,22 +88,34 @@ const ImageCropper = ({
         },
       })
       if (response.status === 200) {
-        console.log("Image saved successfully")
+        const { uploadUrl, fileName } = response.data
+
+        const uploadResponse = await axios.put(uploadUrl, blob, {
+          headers: {
+            "Content-Type": blob.type,
+          },
+        })
+
+        if (uploadResponse.status === 200) {
+          console.log("Cropped Image Saved Succesfully.")
+        } else {
+          console.error("S3 Upload Failed:", uploadResponse.data.error)
+        }
       } else {
         console.error("Failed to save image")
       }
     } catch (error) {
       console.error("Error uploading image:", error)
     } finally {
-      //   setFileName(croppedFileName)
-      setLoading(false)
     }
   }
 
   const onCropComplete = async (crop) => {
     if (imgRef.current && crop.width && crop.height) {
+      setLoading(true)
       const croppedImageBlob = await getCroppedImg(imgRef.current, crop)
       await saveImage(croppedImageBlob)
+      setShouldFetch((prev) => prev + 1)
     }
   }
 
@@ -112,10 +126,10 @@ const ImageCropper = ({
           crop={crop}
           onChange={(c) => setCrop(c)}
           onComplete={onCropComplete}
-          onDragEnd={() => setShouldFetch((prev) => prev + 1)}
         >
           <img
             ref={imgRef}
+            crossOrigin="anonymous"
             alt="Crop me"
             src={imageSrc}
             onLoad={onImageLoad}
