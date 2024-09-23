@@ -11,7 +11,7 @@ const TwinkleImage = ({ twinkle = true, children }) => {
           id: i,
           left: Math.random() * 100,
           top: Math.random() * 100,
-          size: Math.random() * 10,
+          size: Math.random() * 8,
           duration: Math.random() * 2 + 1,
         })
       }

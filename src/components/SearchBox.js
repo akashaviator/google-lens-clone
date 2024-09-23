@@ -1,5 +1,5 @@
 "use client"
-import React, { forwardRef, useState } from "react"
+import React, { forwardRef } from "react"
 import Search from "../../public/svgs/search.svg"
 import Speech from "../../public/svgs/speech.svg"
 import Lens from "../../public/svgs/lens.svg"

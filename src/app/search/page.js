@@ -9,7 +9,7 @@ import axios from "axios"
 
 function SearchPageContent() {
   const searchParams = useSearchParams()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [products, setProducts] = useState([])
   const qsearch = searchParams.get("search")
   const [fileName, setFileName] = useState(qsearch)
@@ -25,7 +25,6 @@ function SearchPageContent() {
     : null
 
   useEffect(() => {
-    console.log(fileName, shouldFetch)
     if (!imageSrc) return
     const fetchData = async () => {
       try {
@@ -52,7 +51,9 @@ function SearchPageContent() {
       <div className={`grid grid-cols-[3fr_auto] flex-grow bg-[#202125]`}>
         <div className="h-full flex items-center justify-center bg ">
           {qsearch ? (
-            <TwinkleImage twinkle={loading && shouldFetch === 0}>
+            <TwinkleImage
+              twinkle={loading && products.length === 0 && shouldFetch === 0}
+            >
               <ImageCropper
                 imageSrc={imageSrc}
                 fileName={fileName}

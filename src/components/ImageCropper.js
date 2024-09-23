@@ -31,7 +31,6 @@ const ImageCropper = ({
   }
 
   useEffect(() => {
-    console.log("setting file name")
     setFullCrop()
     const croppedName = generateUniqueFileName()
     setFileName(croppedName)
@@ -95,18 +94,11 @@ const ImageCropper = ({
             "Content-Type": blob.type,
           },
         })
-
-        if (uploadResponse.status === 200) {
-          console.log("Cropped Image Saved Succesfully.")
-        } else {
-          console.error("S3 Upload Failed:", uploadResponse.data.error)
-        }
       } else {
         console.error("Failed to save image")
       }
     } catch (error) {
       console.error("Error uploading image:", error)
-    } finally {
     }
   }
 
@@ -126,6 +118,7 @@ const ImageCropper = ({
           crop={crop}
           onChange={(c) => setCrop(c)}
           onComplete={onCropComplete}
+          minHeight={50}
         >
           <img
             ref={imgRef}

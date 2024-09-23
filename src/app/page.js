@@ -39,7 +39,10 @@ export default function Home() {
           className="mb-6 w-[272px]"
         />
         {isLensSearch ? (
-          <LensSearch ref={lensSearchRef} />
+          <LensSearch
+            ref={lensSearchRef}
+            onClose={() => setIsLensSearch(false)}
+          />
         ) : (
           <SearchBox
             setIsLensSearch={setIsLensSearch}

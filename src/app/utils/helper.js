@@ -31,7 +31,7 @@ export async function extractProductsData(html) {
         ? jsonData[1][1][1][8][8][0][12]
         : jsonData[1][0][1][8][8][0][12]
   } catch (error) {
-    console.error("The data is not in the expected format:", error)
+    throw new Error("The data is not in the expected format:")
   }
 
   const productList = []

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import axios from "axios"
 import UploadLoader from "./UploadLoader"
 
-const LensSearch = forwardRef((props, ref) => {
+const LensSearch = forwardRef(({ onClose }, ref) => {
   const fileInput = useRef(null)
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -65,7 +65,10 @@ const LensSearch = forwardRef((props, ref) => {
       className="relative w-full flex items-center justify-center h-[362px] max-w-[592px] bg-[#303134] mb-1 rounded-[25px]"
     >
       <div className="w-[555px] h-full">
-        <span className="absolute right-0 translate-y-4 -translate-x-full">
+        <span
+          className="absolute right-0 translate-y-4 -translate-x-full cursor-pointer"
+          onClick={onClose}
+        >
           <Close width={25} height={25} />
         </span>
 
