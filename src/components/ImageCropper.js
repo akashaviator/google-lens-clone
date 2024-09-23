@@ -126,7 +126,7 @@ const ImageCropper = ({
             alt="Crop me"
             src={imageSrc}
             onLoad={onImageLoad}
-            style={{ width: "400px", height: "auto" }}
+            style={{ width: "700px", height: "auto", maxHeight: "800px" }}
           />
         </ReactCrop>
       )}
