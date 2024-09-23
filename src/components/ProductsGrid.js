@@ -43,6 +43,10 @@ const ProductsGrid = ({ products, loading }) => {
         </div>
       ))}
     </div>
+  ) : products.length === 0 ? (
+    <div className="h-full flex items-center justify-center w-[600px] text-black">
+      Some error occurred. Pleasy try again.
+    </div>
   ) : (
     <div className="products-container overflow-y-scroll">
       <div

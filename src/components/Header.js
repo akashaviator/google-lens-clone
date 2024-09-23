@@ -27,9 +27,7 @@ const Header = ({ className, showLogo = false }) => {
         </div>
       )}
       <div className="ml-2 flex items-center gap-1">
-        {showLogo ? (
-          <span> Upload </span>
-        ) : (
+        {showLogo ? null : (
           <React.Fragment>
             <a href="#" className={LINK_CLASS}>
               Gmail
